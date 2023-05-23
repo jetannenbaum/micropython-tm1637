@@ -185,7 +185,7 @@ var tm1637Blob = new Blob([
 '        else:\n' +
 '            string = "{0: >2d}".format(num)\n' +
 '            self.write(self.encode_string(string))\n' +
-'        if degree_type == "C":\n'+
+'        if degree_type:\n'+
 '            self.write([_SEGMENTS[38], _SEGMENTS[12]], 2) # degrees C\n' +
 '        else:\n' +
 '            self.write([_SEGMENTS[38], _SEGMENTS[15]], 2) # degrees F\n' +
