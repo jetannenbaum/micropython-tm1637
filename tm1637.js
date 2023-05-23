@@ -1,4 +1,4 @@
-var TM1637Blob = new Blob([
+var tm1637Blob = new Blob([
 '"""\n' +
 'MicroPython TM1637 quad 7-segment LED display driver\n' +
 'https://github.com/mcauser/micropython-tm1637\n' +
@@ -37,7 +37,8 @@ var TM1637Blob = new Blob([
 'TM1637_MSB = const(128)  # msb is the decimal point or the colon depending on your display\n' +
 '\n' +
 '# 0-9, a-z, blank, dash, star\n' +
-'_SEGMENTS = bytearray(b"\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x77\x7C\x39\x5E\x79\x71\x3D\x76\x06\x1E\x76\x38\x55\x54\x3F\x73\x67\x50\x6D\x78\x3E\x1C\x2A\x76\x6E\x5B\x00\x40\x63")\n' +
+'_SEGS = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111, 119, 124, 57, 94, 121, 113, 61, 118, 6, 30, 118, 56, 85, 84, 63, 115, 103, 80, 109, 102, 62, 28, 42, 118, 110, 91, 0, 64, 99]\n' +
+'_SEGMENTS = bytearray(_SEGS)\n' +
 '\n' +
 'class TM1637(object):\n' +
 '    """Library for quad 7-segment LED modules based on the TM1637 LED driver."""\n' +
@@ -152,7 +153,7 @@ var TM1637Blob = new Blob([
 '            return _SEGMENTS[o-87] # lowercase a-z\n' +
 '        if o >= 48 and o <= 57:\n' +
 '            return _SEGMENTS[o-48] # 0-9\n' +
-'        raise ValueError("Character out of range: {:d} "{:s}"".format(o, chr(o)))\n' +
+'        raise ValueError("Character out of range: {:d} {:s}".format(o, chr(o)))\n' +
 '\n' +
 '    def hex(self, val):\n' +
 '        """Display a hex value 0x0000 through 0xffff, right aligned."""\n' +
@@ -176,7 +177,7 @@ var TM1637Blob = new Blob([
 '            segments[1] |= 0x80 # colon on\n' +
 '        self.write(segments)\n' +
 '\n' +
-'    def temperature(self, num):\n' +
+'    def temperature(self, num, degree_type):\n' +
 '        if num < -9:\n' +
 '            self.show("lo") # low\n' +
 '        elif num > 99:\n' +
@@ -184,7 +185,10 @@ var TM1637Blob = new Blob([
 '        else:\n' +
 '            string = "{0: >2d}".format(num)\n' +
 '            self.write(self.encode_string(string))\n' +
-'        self.write([_SEGMENTS[38], _SEGMENTS[12]], 2) # degrees C\n' +
+'        if degree_type == "C":\n'+
+'            self.write([_SEGMENTS[38], _SEGMENTS[12]], 2) # degrees C\n' +
+'        else:\n' +
+'            self.write([_SEGMENTS[38], _SEGMENTS[15]], 2) # degrees F\n' +
 '\n' +
 '    def show(self, string, colon=False):\n' +
 '        segments = self.encode_string(string)\n' +
